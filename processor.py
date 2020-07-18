@@ -55,7 +55,7 @@ def transpose():
 
 
 def t_main_diag(A):
-    return list(map(list, zip(*A)))
+    return list(zip(*A))
 
 
 def t_side_diag(A):
@@ -69,12 +69,28 @@ def t_horizontal(A):
 def t_vertical(A):
     return [[a for a in A_row[::-1]] for A_row in A]
 
+def determinant():
+    A = get_matrix()
+    return _determinant(A)
+
+def _determinant(A):
+    if len(A) == len(A[0]) == 1:
+        return A[0][0]
+    if len(A) == len(A[0]) == 2:
+        return A[0][0] * A[1][1] - A[0][1] * A[1][0]
+    det = 0
+
+    for i in range(len(A)):
+        det += (-1) ** i * A[0][i] * _determinant([[A[k][l] for l in range(len(A)) if l != i] for k in range(1, len(A))])
+
+    return det
 
 def menu():
     print("1. Add matrices")
     print("2. Multiply matrix by a constant")
     print("3. Multiply matrices")
     print("4. Transpose matrix")
+    print("5. Calculate a determinant")
     print("0. Exit")
     return int(input("Your choice: > "))
 
@@ -91,6 +107,8 @@ while answer != 0:
         result = multiplay_matrices()
     elif answer == 4:
         result = transpose()
+    elif answer == 5:
+        result = determinant()
     if result != -1 and isinstance(result, list):
         print("The result is:")
         print(*[' '.join(map(str, result[i])) for i in range(len(result))], sep='\n')
